@@ -1,1 +1,34 @@
-/* You can add global styles to this file, and also import other style files */
+.search-area {
+  padding: 10px;
+}
+
+.page-header {
+  margin: 0px 0 15px !important;
+  padding: 20px 0 20px;
+}
+
+.modal-footer {
+  border-top: none !important;
+}
+
+.inline {
+  display: inline;
+}
+
+.btn-secondary {
+  color: #fff;
+  background-color: #6c757d;
+  border-color: #6c757d;
+}
+
+a{
+  cursor: pointer;
+}
+
+.float-right{
+  float: right;
+}
+
+i:hover{
+  cursor: pointer;
+}

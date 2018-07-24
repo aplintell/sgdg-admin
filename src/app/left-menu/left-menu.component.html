@@ -1,0 +1,25 @@
+<nav *ngIf="loaded==true" class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+  <header-area></header-area>
+  <div class="navbar-default sidebar" role="navigation">
+    <div class="sidebar-nav navbar-collapse">
+      <ul class="nav" id="side-menu">
+        <li *ngIf="loaded==true && me!= null &&  me.permissions.indexOf(permissionService.VIEW_USER_MANAGEMENT) !== -1">
+          <a [routerLink]="['/user']" [class.active]="selectedPage == 'user'">
+            <i class="fa fa-black-tie fa-fw "></i> {{'User Management' | translate}}</a>
+        </li>
+        <li *ngIf="loaded==true && me!= null &&  me.permissions.indexOf(permissionService.VIEW_CUSTOMER_MANAGEMENT) !== -1">
+          <a [routerLink]="['/customer']" [class.active]="selectedPage == 'customer'">
+            <i class="fa fa-users fa-fw"></i> {{'Customer Management' | translate}}</a>
+        </li>
+        <li *ngIf="loaded==true && me!= null &&  me.permissions.indexOf(permissionService.VIEW_CATEGORY_MANAGEMENT) !== -1">
+          <a [routerLink]="['/category']" [class.active]="selectedPage == 'category'">
+            <i class="fa fa-align-justify fa-fw"></i> {{'Category Management' | translate}}</a>
+        </li>
+        <li *ngIf="loaded==true && me!= null &&  me.permissions.indexOf(permissionService.VIEW_BRAND_MANAGEMENT) !== -1">
+          <a [routerLink]="['/brand']" [class.active]="selectedPage == 'brand'">
+            <i class="fa fa-buysellads fa-fw"></i> {{'Brand Management' | translate}}</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

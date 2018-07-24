@@ -1,0 +1,197 @@
+<left-menu></left-menu>
+<div id="page-wrapper">
+  <div class="col-lg-12">
+    <h3 class="page-header">{{'User Management' | translate}}
+      <input type="button" class="btn btn-primary" style="float: right;" data-toggle="modal" data-target="#modal" value="+" (click)="showCreateModal(0)">
+    </h3>
+  </div>
+
+  <div class="row search-area">
+    <div class="col-lg-12">
+      <form role="form" [formGroup]="searchForm">
+        <div class="form-group col-lg-6">
+          <label>{{'Last Name' | translate}}</label>
+          <input formControlName="lastName" class="form-control">
+        </div>
+
+        <div class="form-group col-lg-6">
+          <label>{{'First Name' | translate}}</label>
+          <input formControlName="firstName" class="form-control">
+        </div>
+
+        <div class="form-group col-lg-6">
+          <label>{{'Login ID' | translate}}</label>
+          <input formControlName="loginId" class="form-control">
+        </div>
+
+        <div class="form-group col-lg-6">
+          <label>{{'Email' | translate}}</label>
+          <input formControlName="email" class="form-control">
+        </div>
+        <div class="form-group col-lg-12 float-right">
+          <button (click)="search()" type="button" class="btn btn-default float-right">{{'Search' | translate}}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div *ngIf="(searchList == null || searchList.length == 0) && isSearchSubmitted" class="row">
+    <div class="col-lg-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <label>{{'No Record Found' | translate}}</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="searchList != null && searchList.length>0" class="row">
+    <div class="col-lg-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <label>{{'Search Result' | translate}}</label>
+        </div>
+        <div class="panel-body">
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>{{'First Name' | translate}}</th>
+                  <th>{{'Last Name' | translate}}</th>
+                  <th>{{'Login ID' | translate}}</th>
+                  <th>{{'Email' | translate}}</th>
+                  <th>{{'Operation' | translate}}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let user of searchList; let idx = index">
+                  <td>{{(currentPage-1) * numRecordPerPage + idx+1}}</td>
+                  <td>{{user.firstName}}</td>
+                  <td>{{user.lastName}}</td>
+                  <td>{{user.loginId}}</td>
+                  <td>{{user.email}}</td>
+                  <td>
+                    <span>
+                      <i class="fa fa-edit fa-fw" (click)="showCreateModal(user.userId)" data-toggle="modal" data-target="#modal"></i>
+                    </span>
+                    <span>
+                      <i class="fa fa-remove fa-fw" (click)="showDeleteModal(user.userId)" data-toggle="modal" data-target="#deleteModal"></i>
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create/Update Modal -->
+  <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="createUpdateModelTopic" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title inline " id="exampleModalLongTitle">{{modalTitle | translate}}</h3>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeModal()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="createForm">
+            <div class="col-sm-4 form-group">
+              {{'Login ID' | translate}}:
+            </div>
+            <div class="col-sm-8 form-group">
+              <input formControlName="loginId" class="form-control col-sm-12" id="name">
+            </div>
+            <div *ngIf="isCreateSubmitted && createForm.get('loginId').invalid" class="col-sm-12 form-group error alert alert-warning center">
+              {{'required'|translate}}
+            </div>
+            <div class="col-sm-4 form-group">
+              {{'Last Name' | translate}}:
+            </div>
+            <div class="col-sm-8 form-group">
+              <input formControlName="lastName" class="form-control col-sm-12" id="name">
+            </div>
+            <div *ngIf="isCreateSubmitted && createForm.get('lastName').invalid" class="col-sm-12 form-group error alert alert-warning center">
+              {{'required'|translate}}
+            </div>
+            <div class="col-sm-4 form-group">
+              {{'First Name' | translate}}:
+            </div>
+            <div class="col-sm-8 form-group">
+              <input formControlName="firstName" class="form-control col-sm-12" id="name">
+            </div>
+            <div *ngIf="isCreateSubmitted && createForm.get('firstName').invalid" class="col-sm-12 form-group error alert alert-warning center">
+              {{'required'|translate}}
+            </div>
+            <div class="col-sm-4 form-group">
+              {{'Email' | translate}}:
+            </div>
+            <div class="col-sm-8 form-group">
+              <input formControlName="email" class="form-control col-sm-12" id="name">
+            </div>
+            <div *ngIf="isCreateSubmitted && createForm.get('email').invalid" class="col-sm-12 form-group error alert alert-warning center">
+              {{'required'|translate}}
+            </div>
+            <div class="col-sm-4 form-group">
+              {{'Role' | translate}}:
+            </div>
+            <div class="col-sm-8 form-group">
+              <select formControlName="roleId" class="form-control col-sm-12">
+                <option value="1">Sale</option>
+                <option value="2">Writer</option>
+                <option value="3">Mod</option>
+                <option value="4">HR</option>
+                <option value="5">Accountant</option>
+                <option value="6">Admin</option>
+              </select>
+            </div>
+            <div class="col-sm-4 form-group">
+              {{'Status' | translate}}:
+            </div>
+            <div class="col-sm-8 form-group">
+              <select formControlName="status" class="form-control col-sm-12">
+                <option value="ACTIVE">ACTIVE</option>
+                <option value="INACTIVE">INACTIVE</option>
+                <option value="BLOCK">BLOCK</option>
+              </select>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary " data-dismiss="modal" (click)="closeModal()">{{'Close' | translate}}</button>
+          <button type="button" class="btn btn-primary" (click)="save()">{{'Save' | translate}}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- END Create/Update Modal -->
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModelTopic" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title inline">{{'Confirmation' | translate}}</h3>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="col-sm-12 form-group">
+            {{'Are you sure you want to delete this item?' | translate}}
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary " data-dismiss="modal">{{'Close' | translate}}</button>
+          <button type="button" class="btn btn-primary" (click)="delete()">{{'Delete' | translate}}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- END Delete Confirmation Modal -->
+  <paging *ngIf="searchList != null && searchList.length>0"></paging>
+</div>

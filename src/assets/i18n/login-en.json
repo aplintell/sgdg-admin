@@ -1,0 +1,6 @@
+{
+    "LOGIN_FIELDS_REQUIRED" : "Vui lòng nhập login ID và Password",
+    "ACTION_SUCCESS": "Thao tác thành công",
+    "LOGIN_ID_NOT_EXIST": "Tên đăng nhập không tồn tại",
+    "PASSWORD_INCORRECT": "Mật khẩu không chính xác"
+}

@@ -1,0 +1,28 @@
+<div *ngIf="currentPage != 0" class="row">
+  <div class="col-sm-6">
+    <div class="dataTables_info" id="dataTables-example_info" role="status" aria-live="polite">
+      <span *ngIf="currentPage * numRecordPerPage >= totalRecord">{{(currentPage-1) * numRecordPerPage + 1}} - {{totalRecord}} {{'on' | translate}} {{totalRecord}} {{'entrie(s)' | translate}}</span>
+      <span *ngIf="currentPage * numRecordPerPage < totalRecord">{{(currentPage-1) * numRecordPerPage + 1}} - {{currentPage * numRecordPerPage}} {{'on' | translate}} {{totalRecord}} {{'entrie(s)' | translate}}</span>
+    </div>
+  </div>
+  <div class="col-sm-6">
+    <div class="dataTables_paginate paging_simple_numbers" id="dataTables-example_paginate">
+      <ul class="pagination">
+        <li [class.disabled]="currentPage == 1" class="paginate_button previous" aria-controls="dataTables-example" tabindex="0"
+          id="dataTables-example_previous">
+          <a *ngIf="currentPage > 1" (click)="change(currentPage-1)">{{'Previous' | translate}}</a>
+          <a *ngIf="currentPage == 1">{{'Previous' | translate}}</a>
+        </li>
+        <li *ngFor="let page of pages" [class.active]="currentPage == page" class="paginate_button" aria-controls="dataTables-example"
+          tabindex="0">
+          <a (click)="change(page)">{{page}}</a>
+        </li>
+        <li [class.disabled]="currentPage == totalPage" class="paginate_button next" aria-controls="dataTables-example" tabindex="0"
+          id="dataTables-example_next">
+          <a *ngIf="currentPage < totalPage" (click)="change(currentPage+1)">{{'Next' | translate}}</a>
+          <a *ngIf="currentPage == totalPage">{{'Next' | translate}}</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
