@@ -29,7 +29,7 @@
           <input formControlName="email" class="form-control">
         </div>
         <div class="form-group col-lg-12 float-right">
-          <button (click)="search()" type="button" class="btn btn-default float-right">{{'Search' | translate}}</button>
+          <button (click)="currentPage = 0; search()" type="button" class="btn btn-default float-right">{{'Search' | translate}}</button>
         </div>
       </form>
     </div>
@@ -57,20 +57,31 @@
               <thead>
                 <tr>
                   <th>#</th>
-                  <th>{{'First Name' | translate}}</th>
                   <th>{{'Last Name' | translate}}</th>
-                  <th>{{'Login ID' | translate}}</th>
+                  <th>{{'First Name' | translate}}</th>
                   <th>{{'Email' | translate}}</th>
+                  <th>{{'Phone' | translate}}</th>
+                  <th>{{'Role' | translate}}</th>
+                  <th>{{'Status' | translate}}</th>
                   <th>{{'Operation' | translate}}</th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let user of searchList; let idx = index">
                   <td>{{(currentPage-1) * numRecordPerPage + idx+1}}</td>
-                  <td>{{user.firstName}}</td>
                   <td>{{user.lastName}}</td>
-                  <td>{{user.loginId}}</td>
+                  <td>{{user.firstName}}</td>
                   <td>{{user.email}}</td>
+                  <td>{{user.phone}}</td>
+                  <td>{{'Role' + user.roleId | translate}}</td>
+                  <td>
+                    <span *ngIf="user.status == 'ACTIVE'">
+                      <i class="fa fa-unlock fa-fw" (click)="toggleStatus(user.userId)"></i>
+                    </span>
+                    <span *ngIf="user.status == 'INACTIVE'">
+                      <i class="fa fa-lock fa-fw" (click)="toggleStatus(user.userId)"></i>
+                    </span>
+                  </td>
                   <td>
                     <span>
                       <i class="fa fa-edit fa-fw" (click)="showCreateModal(user.userId)" data-toggle="modal" data-target="#modal"></i>
@@ -127,6 +138,18 @@
             <div *ngIf="isCreateSubmitted && createForm.get('firstName').invalid" class="col-sm-12 form-group error alert alert-warning center">
               {{'required'|translate}}
             </div>
+
+            <div class="col-sm-4 form-group">
+              {{'Gender' | translate}}:
+            </div>
+            <div class="col-sm-8 form-group">
+              <select formControlName="gender" class="form-control col-sm-12">
+                <option value="MALE">{{'MALE' | translate}}</option>
+                <option value="FEMALE">{{'FEMALE' | translate}}</option>
+                <option value="OTHER">{{'OTHER' | translate}}</option>
+              </select>
+            </div>
+
             <div class="col-sm-4 form-group">
               {{'Email' | translate}}:
             </div>
@@ -136,6 +159,98 @@
             <div *ngIf="isCreateSubmitted && createForm.get('email').invalid" class="col-sm-12 form-group error alert alert-warning center">
               {{'required'|translate}}
             </div>
+
+            <div class="col-sm-4 form-group">
+              {{'Date Of Birth' | translate}}:
+            </div>
+            <div class="col-sm-8 form-group">
+              <input formControlName="dob" class="form-control col-sm-12" id="dob">
+            </div>
+            <div *ngIf="isCreateSubmitted && createForm.get('dob').invalid" class="col-sm-12 form-group error alert alert-warning center">
+              {{'required'|translate}}
+            </div>
+
+            <div class="col-sm-4 form-group">
+              {{'Address' | translate}}:
+            </div>
+            <div class="col-sm-8 form-group">
+              <input formControlName="address" class="form-control col-sm-12" id="dob">
+            </div>
+            <div *ngIf="isCreateSubmitted && createForm.get('address').invalid" class="col-sm-12 form-group error alert alert-warning center">
+              {{'required'|translate}}
+            </div>
+
+            <div class="col-sm-4 form-group">
+              {{'Phone' | translate}}:
+            </div>
+            <div class="col-sm-8 form-group">
+              <input formControlName="phone" class="form-control col-sm-12" id="phone">
+            </div>
+            <div *ngIf="isCreateSubmitted && createForm.get('phone').invalid" class="col-sm-12 form-group error alert alert-warning center">
+              {{'required'|translate}}
+            </div>
+
+            <div class="col-sm-4 form-group" *ngIf="avatarImage">
+            </div>
+            <div class="col-sm-8  form-group" *ngIf="avatarImage">
+              <img width="100px" height="100px" [src]="avatarImage" *ngIf="avatarImage" class="imgPlaceholder">
+            </div>
+
+            <div class="col-sm-4 form-group" *ngIf="selectedObject.avatar && !avatarImage">
+              </div>
+            <div class="col-sm-8  form-group" *ngIf="selectedObject.avatar && !avatarImage">
+              <img width="150px" height="100px" [src]="imageUrl + selectedObject.avatar" *ngIf="selectedObject.avatar" class="imgPlaceholder">
+            </div>
+
+            <div class="col-sm-4 form-group">
+              {{'Avatar' | translate}}:
+            </div>
+            <div class="col-sm-8 form-group">
+              <input type="file" id="avatar" (change)="onFileChange($event,'avatar')" #avatar>
+            </div>
+
+
+            <div class="col-sm-4 form-group" *ngIf="frontIDImage">
+            </div>
+            <div class="col-sm-8  form-group" *ngIf="frontIDImage">
+              <img width="150px" height="100px" [src]="frontIDImage" *ngIf="frontIDImage" class="imgPlaceholder">
+            </div>
+
+            <div class="col-sm-4 form-group" *ngIf="selectedObject.frontIdCard && !frontIDImage">
+              </div>
+            <div class="col-sm-8  form-group" *ngIf="selectedObject.frontIdCard && !frontIDImage">
+              <img width="150px" height="100px" [src]="imageUrl + selectedObject.frontIdCard" *ngIf="selectedObject.frontIdCard" class="imgPlaceholder">
+            </div>
+
+            <div class="col-sm-4 form-group">
+              {{'ID Card Front Side' | translate}}:
+            </div>
+            <div class="col-sm-8 form-group">
+              <input type="file" id="frontIdCard" (change)="onFileChange($event,'frontIdCard')" #frontIdCard>
+            </div>
+
+
+          
+            <div class="col-sm-4 form-group" *ngIf="backIDImage">
+            </div>
+            <div class="col-sm-8  form-group" *ngIf="backIDImage">
+              <img width="150px" height="100px" [src]="backIDImage" *ngIf="backIDImage" class="imgPlaceholder">
+            </div>
+
+            <div class="col-sm-4 form-group" *ngIf="selectedObject.backIdCard && !backIDImage">
+              </div>
+            <div class="col-sm-8  form-group" *ngIf="selectedObject.backIdCard && !backIDImage">
+              <img width="150px" height="100px" [src]="imageUrl + selectedObject.backIdCard" *ngIf="selectedObject.backIdCard" class="imgPlaceholder">
+            </div>
+
+            <div class="col-sm-4 form-group">
+              {{'ID Card Back Side' | translate}}:
+            </div>
+            <div class="col-sm-8 form-group">
+              <input type="file" id="backIdCard" (change)="onFileChange($event,'backIdCard')" #backIdCard>
+            </div>
+
+
             <div class="col-sm-4 form-group">
               {{'Role' | translate}}:
             </div>

@@ -11,4 +11,7 @@ export class UserService extends DataService {
     super("/user/", http, globalService);
   }
 
+  toggleStatus(id) {
+    return this.http.post(this.globalService.serviceHost + "/user/toggleStatus/" + id, null, this.globalService.formTypeOpion);
+  }
 }

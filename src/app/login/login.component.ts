@@ -25,7 +25,7 @@ export class LoginComponent implements OnInit {
     this.meService.me.subscribe(me => {
       this.me = me;
       if (this.me != null && this.me.id != 0) {
-        this.router.navigateByUrl("/", { skipLocationChange: false });
+        this.router.navigateByUrl(globalService.homePage, { skipLocationChange: false });
       }
     });
   }
@@ -55,7 +55,7 @@ export class LoginComponent implements OnInit {
             this.meService.getMe().subscribe(
               data => {
                 this.meService.updateMe(new Me().deserialize(data.json()));
-                window.location.replace("/");
+                window.location.replace(this.globalService.homePage);
               });
           }
 

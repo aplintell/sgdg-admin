@@ -6,7 +6,9 @@ import { Observable } from 'rxjs';
 export class GlobalService {
 
   serviceHost: string = "http://localhost:8080/sgdg";
+  homePage: string = "/";
   // serviceHost: string = "/sgdg";
+  // homePage: string = "/admin";
   userCookie: string = "ccsid";
   jsonContentTypeOption: RequestOptions;
   formTypeOpion: RequestOptions;

@@ -80,8 +80,15 @@ export class BrandManagementComponent implements OnInit {
     this.isCreateSubmitted = true;
     if (this.createForm.valid) {
       this.selectedObject = new Brand().deserialize(this.createForm.value);
-      this.brandService.save(this.selectedObject).subscribe(response => {
+      let formData = new FormData();
+      formData.append('brandId', this.selectedObject.brandId == null ? '0' : this.selectedObject.brandId + "");
+      formData.append('name', this.selectedObject.name);
+      formData.append('priority', this.selectedObject.priority + "");
+      formData.append('status', this.selectedObject.status);
+      formData.append('image', this.selectedObject.image);
 
+      this.brandService.saveWithForm(formData).subscribe(response => {
+        
         if (response.text() == "true") {
           this.createForm.reset();
           this.closeModal();
@@ -129,7 +136,7 @@ export class BrandManagementComponent implements OnInit {
       name: [brand.name, Validators.required],
       priority: [brand.priority == null ? 0 : brand.priority, Validators.required],
       status: [brand.status == null ? 'ACTIVE' : brand.status, Validators.required],
-      image: [brand.image, Validators.required]
+      image: [brand.image]
     });
   }
 

@@ -1,3 +1,8 @@
 {
-   
+  "Role1": "Sale",
+  "Role2": "Writer",
+  "Role3": "Mod",
+  "Role4": "HR",
+  "Role5": "Accountant",
+  "Role6": "Admin"
 }

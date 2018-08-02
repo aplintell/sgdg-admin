@@ -2,7 +2,7 @@
 <div id="page-wrapper">
   <div class="col-lg-12">
     <h3 class="page-header">{{'Customer Management' | translate}}
-      <!-- <input type="button" class="btn btn-primary" style="float: right;" data-toggle="modal" data-target="#modal" value="+" (click)="showCreateModal(0)"> -->
+      <input type="button" class="btn btn-primary" style="float: right;" data-toggle="modal" data-target="#modal" value="+" (click)="showCreateModal(0)">
     </h3>
   </div>
 
@@ -29,7 +29,7 @@
           <input formControlName="email" class="form-control">
         </div>
         <div class="form-group col-lg-12 float-right">
-          <button (click)="search()" type="button" class="btn btn-default float-right">{{'Search' | translate}}</button>
+          <button (click)="currentPage = 0;search()" type="button" class="btn btn-default float-right">{{'Search' | translate}}</button>
         </div>
       </form>
     </div>
@@ -61,6 +61,9 @@
                   <th>{{'Last Name' | translate}}</th>
                   <th>{{'Login ID' | translate}}</th>
                   <th>{{'Email' | translate}}</th>
+                  <th>{{'Phone' | translate}}</th>
+                  <th>{{'Point' | translate}}</th>
+                  <th>{{'Type' | translate}}</th>
                   <th>{{'Operation' | translate}}</th>
                 </tr>
               </thead>
@@ -71,13 +74,16 @@
                   <td>{{customer.lastName}}</td>
                   <td>{{customer.loginId}}</td>
                   <td>{{customer.email}}</td>
+                  <td>{{customer.phone}}</td>
+                  <td>{{customer.point}}</td>
+                  <td>{{customer.customerType}}</td>
                   <td>
                     <span>
                       <i class="fa fa-edit fa-fw" (click)="showCreateModal(customer.customerId)" data-toggle="modal" data-target="#modal"></i>
                     </span>
-                    <!-- <span>
+                    <span>
                       <i class="fa fa-remove fa-fw" (click)="showDeleteModal(customer.customerId)" data-toggle="modal" data-target="#deleteModal"></i>
-                    </span> -->
+                    </span>
                   </td>
                 </tr>
               </tbody>
@@ -127,6 +133,18 @@
             <div *ngIf="isCreateSubmitted && createForm.get('firstName').invalid" class="col-sm-12 form-group error alert alert-warning center">
               {{'required'|translate}}
             </div>
+
+            <div class="col-sm-4 form-group">
+              {{'Gender' | translate}}:
+            </div>
+            <div class="col-sm-8 form-group">
+              <select formControlName="gender" class="form-control col-sm-12">
+                <option value="MALE">{{'MALE' | translate}}</option>
+                <option value="FEMALE">{{'FEMALE' | translate}}</option>
+                <option value="OTHER">{{'OTHER' | translate}}</option>
+              </select>
+            </div>
+
             <div class="col-sm-4 form-group">
               {{'Email' | translate}}:
             </div>
@@ -136,6 +154,123 @@
             <div *ngIf="isCreateSubmitted && createForm.get('email').invalid" class="col-sm-12 form-group error alert alert-warning center">
               {{'required'|translate}}
             </div>
+
+            <div class="col-sm-4 form-group">
+              {{'Date Of Birth' | translate}}:
+            </div>
+            <div class="col-sm-8 form-group">
+              <input formControlName="dob" class="form-control col-sm-12" id="dob">
+            </div>
+            <div *ngIf="isCreateSubmitted && createForm.get('dob').invalid" class="col-sm-12 form-group error alert alert-warning center">
+              {{'required'|translate}}
+            </div>
+
+            <div class="col-sm-4 form-group">
+              {{'Address' | translate}}:
+            </div>
+            <div class="col-sm-8 form-group">
+              <input formControlName="address" class="form-control col-sm-12" id="dob">
+            </div>
+            <div *ngIf="isCreateSubmitted && createForm.get('address').invalid" class="col-sm-12 form-group error alert alert-warning center">
+              {{'required'|translate}}
+            </div>
+
+            <div class="col-sm-4 form-group">
+              {{'Phone' | translate}}:
+            </div>
+            <div class="col-sm-8 form-group">
+              <input formControlName="phone" class="form-control col-sm-12" id="phone">
+            </div>
+            <div *ngIf="isCreateSubmitted && createForm.get('phone').invalid" class="col-sm-12 form-group error alert alert-warning center">
+              {{'required'|translate}}
+            </div>
+
+            <div class="col-sm-4 form-group" *ngIf="avatarImage">
+            </div>
+            <div class="col-sm-8  form-group" *ngIf="avatarImage">
+              <img width="100px" height="100px" [src]="avatarImage" *ngIf="avatarImage" class="imgPlaceholder">
+            </div>
+
+            <div class="col-sm-4 form-group" *ngIf="selectedObject.avatar && !avatarImage">
+            </div>
+            <div class="col-sm-8  form-group" *ngIf="selectedObject.avatar && !avatarImage">
+              <img width="150px" height="100px" [src]="imageUrl + selectedObject.avatar" *ngIf="selectedObject.avatar" class="imgPlaceholder">
+            </div>
+
+            <div class="col-sm-4 form-group">
+              {{'Avatar' | translate}}:
+            </div>
+            <div class="col-sm-8 form-group">
+              <input type="file" id="avatar" (change)="onFileChange($event,'avatar')" #avatar>
+            </div>
+
+
+            <div class="col-sm-4 form-group" *ngIf="frontIDImage">
+            </div>
+            <div class="col-sm-8  form-group" *ngIf="frontIDImage">
+              <img width="150px" height="100px" [src]="frontIDImage" *ngIf="frontIDImage" class="imgPlaceholder">
+            </div>
+
+            <div class="col-sm-4 form-group" *ngIf="selectedObject.frontIdCard && !frontIDImage">
+            </div>
+            <div class="col-sm-8  form-group" *ngIf="selectedObject.frontIdCard && !frontIDImage">
+              <img width="150px" height="100px" [src]="imageUrl + selectedObject.frontIdCard" *ngIf="selectedObject.frontIdCard" class="imgPlaceholder">
+            </div>
+
+            <div class="col-sm-4 form-group">
+              {{'ID Card Front Side' | translate}}:
+            </div>
+            <div class="col-sm-8 form-group">
+              <input type="file" id="frontIdCard" (change)="onFileChange($event,'frontIdCard')" #frontIdCard>
+            </div>
+
+
+
+            <div class="col-sm-4 form-group" *ngIf="backIDImage">
+            </div>
+            <div class="col-sm-8  form-group" *ngIf="backIDImage">
+              <img width="150px" height="100px" [src]="backIDImage" *ngIf="backIDImage" class="imgPlaceholder">
+            </div>
+
+            <div class="col-sm-4 form-group" *ngIf="selectedObject.backIdCard && !backIDImage">
+            </div>
+            <div class="col-sm-8  form-group" *ngIf="selectedObject.backIdCard && !backIDImage">
+              <img width="150px" height="100px" [src]="imageUrl + selectedObject.backIdCard" *ngIf="selectedObject.backIdCard" class="imgPlaceholder">
+            </div>
+
+            <div class="col-sm-4 form-group">
+              {{'ID Card Back Side' | translate}}:
+            </div>
+            <div class="col-sm-8 form-group">
+              <input type="file" id="backIdCard" (change)="onFileChange($event,'backIdCard')" #backIdCard>
+            </div>
+
+            <div class="col-sm-4 form-group">
+              {{'Point' | translate}}:
+            </div>
+            <div class="col-sm-8 form-group">
+              <input formControlName="point" type="number" class="form-control col-sm-12" id="point">
+            </div>
+            <div *ngIf="isCreateSubmitted && createForm.get('point').invalid" class="col-sm-12 form-group error alert alert-warning center">
+              {{'required'|translate}}
+            </div>
+
+            <div class="col-sm-4 form-group">
+              {{'Type' | translate}}:
+            </div>
+            <div class="col-sm-8 form-group">
+              <select formControlName="customerType" class="form-control col-sm-12">
+                <option value="NEWBIE">NEWBIE</option>
+                <option value="REGISTER">REGISTER</option>
+                <option value="MEMBER">MEMBER</option>
+                <option value="COPPER">COPPER</option>
+                <option value="SILVER">SILVER</option>
+                <option value="GOLD">GOLD</option>
+                <option value="DIAMOND">DIAMOND</option>
+                <option value="VIP">VIP</option>
+              </select>
+            </div>
+
             <div class="col-sm-4 form-group">
               {{'Status' | translate}}:
             </div>
@@ -143,13 +278,14 @@
               <select formControlName="status" class="form-control col-sm-12">
                 <option value="ACTIVE">ACTIVE</option>
                 <option value="INACTIVE">INACTIVE</option>
+                <option value="BLOCK">BLOCK</option>
               </select>
             </div>
           </form>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary " data-dismiss="modal" (click)="closeModal()">{{'Close' | translate}}</button>
-          <!-- <button type="button" class="btn btn-primary" (click)="save()">{{'Save' | translate}}</button> -->
+          <button type="button" class="btn btn-primary" (click)="save()">{{'Save' | translate}}</button>
         </div>
       </div>
     </div>
@@ -157,7 +293,7 @@
   <!-- END Create/Update Modal -->
 
   <!-- Delete Confirmation Modal -->
-  <!-- <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModelTopic" aria-hidden="true">
+  <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModelTopic" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -177,7 +313,7 @@
         </div>
       </div>
     </div>
-  </div> -->
+  </div>
   <!-- END Delete Confirmation Modal -->
   <paging *ngIf="searchList != null && searchList.length>0"></paging>
 </div>

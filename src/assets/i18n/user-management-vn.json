@@ -4,6 +4,11 @@
   "Login ID": "Login ID",
   "Email": "Email",
   "Role": "Vai Trò",
-  "Status":"Trạng Thái"
-  
+  "Status":"Trạng Thái",
+  "Role1":"Sale",
+  "Role2":"Writer",
+  "Role3":"Mod",
+  "Role4":"HR",
+  "Role5":"Accountant",
+  "Role6":"Admin"
 }

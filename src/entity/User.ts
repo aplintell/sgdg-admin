@@ -7,8 +7,15 @@ export class User implements Deserializable{
     status: string;
     lastName: string;
     firstName: string;
+    gender:string;
+    phone: string;
     email: string;
     roleId: number;
+    dob: string;
+    address: string;
+    avatar: string|any;
+    frontIdCard: string|any;
+    backIdCard: string|any;
 
     constructor(){
     }

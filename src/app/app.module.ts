@@ -64,6 +64,10 @@ export function createTranslateLoader(http: HttpClient) {
         component: UserManagementComponent
       },
       {
+        path: 'admin',
+        component: UserManagementComponent
+      },
+      {
         path: 'user',
         component: UserManagementComponent
       },

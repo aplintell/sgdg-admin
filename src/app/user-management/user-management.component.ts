@@ -1,5 +1,5 @@
 import { TranslateService } from '@ngx-translate/core';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { User } from '../../entity/User';
 import { UserService } from '../../service/user.service';
@@ -19,6 +19,13 @@ export class UserManagementComponent implements OnInit {
   selectedObject: User;
   selectedId: number;
   isCreateSubmitted: boolean = false;
+  avatarUploaded: boolean = false;
+  frontIDUploaded: boolean = false;
+  backIDUploaded: boolean = false;
+  avatarImage: any;
+  frontIDImage: any;
+  backIDImage: any;
+  imageUrl: string;
 
   // Search
   searchForm: FormGroup;
@@ -27,6 +34,15 @@ export class UserManagementComponent implements OnInit {
   numRecordPerPage: number;
   searchList: User[];
   searchString: string;
+
+  @ViewChild('avatar')
+  avatar: ElementRef;
+
+  @ViewChild('frontIdCard')
+  frontIdCard: ElementRef;
+
+  @ViewChild('backIdCard')
+  backIdCard: ElementRef;
 
   /*
     fb: FormBuilder is used for Creating a FormGroup 
@@ -55,7 +71,7 @@ export class UserManagementComponent implements OnInit {
   }
 
   search() {
-    
+
     if (this.searchForm.valid) {
       if (this.currentPage == 0 || this.currentPage == undefined) {
         this.currentPage = 1;
@@ -74,7 +90,24 @@ export class UserManagementComponent implements OnInit {
     this.isCreateSubmitted = true;
     if (this.createForm.valid) {
       this.selectedObject = new User().deserialize(this.createForm.value);
-      this.userService.save(this.selectedObject).subscribe(response => {
+
+      let formData = new FormData();
+      formData.append('userId', this.selectedObject.userId == null ? '0' : this.selectedObject.userId + "");
+      formData.append('firstName', this.selectedObject.firstName);
+      formData.append('lastName', this.selectedObject.lastName);
+      formData.append('gender', this.selectedObject.gender);
+      formData.append('phone', this.selectedObject.phone);
+      formData.append('status', this.selectedObject.status);
+      formData.append('email', this.selectedObject.email);
+      formData.append('address', this.selectedObject.address);
+      formData.append('loginId', this.selectedObject.loginId);
+      formData.append('roleId', this.selectedObject.roleId + "");
+      formData.append('dob', this.selectedObject.dob);
+      formData.append('avatar', this.selectedObject.avatar);
+      formData.append('frontIdCard', this.selectedObject.frontIdCard);
+      formData.append('backIdCard', this.selectedObject.backIdCard);
+
+      this.userService.saveWithForm(formData).subscribe(response => {
         if (response.json() == true) {
           this.createForm.reset();
           this.closeModal();
@@ -93,7 +126,23 @@ export class UserManagementComponent implements OnInit {
     });
   }
 
+  toggleStatus(id) {
+    this.userService.toggleStatus(id).subscribe(response => {
+      this.search();
+    });
+  }
+
   showCreateModal(id: number) {
+    this.avatarUploaded = false;
+    this.frontIDUploaded = false;
+    this.backIDUploaded = false;
+    this.avatarImage = null;
+    this.frontIDImage = null;
+    this.backIDImage = null;
+    this.avatar.nativeElement.value = "";
+    this.frontIdCard.nativeElement.value = "";
+    this.backIdCard.nativeElement.value = "";
+
     if (id == 0) {
       this.modalTitle = "Create";
       this.selectedObject = new User();
@@ -103,7 +152,8 @@ export class UserManagementComponent implements OnInit {
       this.createForm = this.initCreateForm(this.selectedObject);
       this.userService.get(id).subscribe(
         data => {
-          this.selectedObject = new User().deserialize(data.json());
+          this.selectedObject = new User().deserialize(data.json().user);
+          this.imageUrl = data.json().imageUrl;
           this.createForm = this.initCreateForm(this.selectedObject);
         }
       );
@@ -120,9 +170,16 @@ export class UserManagementComponent implements OnInit {
       loginId: [user.loginId, Validators.required],
       firstName: [user.firstName, Validators.required],
       lastName: [user.firstName, Validators.required],
+      gender: [user.gender == null ? 'MALE' : user.gender, Validators.required],
+      phone: [user.phone, Validators.required],
       roleId: [user.roleId == null ? '1' : user.roleId, Validators.required],
       email: [user.email, Validators.required],
-      status: [user.status == null ? 'ACTIVE' : user.status, Validators.required]
+      status: [user.status == null ? 'ACTIVE' : user.status, Validators.required],
+      dob: [user.dob, Validators.required],
+      address: [user.address, Validators.required],
+      avatar: [user.avatar],
+      frontIdCard: [user.frontIdCard],
+      backIdCard: [user.backIdCard],
     });
   }
 
@@ -139,5 +196,28 @@ export class UserManagementComponent implements OnInit {
     $('#modal').modal('toggle');
     this.selectedId = 0;
     this.isCreateSubmitted = false;
+  }
+
+  onFileChange(event, field) {
+    if (event.target.files.length > 0) {
+      let file = event.target.files[0];
+      this.createForm.get(field).setValue(file);
+
+      var reader = new FileReader();
+      reader.onload = (event: any) => {
+        if (field == 'avatar') {
+          this.avatarUploaded = true;
+          this.avatarImage = event.target.result;
+        } else if (field == 'frontIdCard') {
+          this.frontIDUploaded = true;
+          this.frontIDImage = event.target.result;
+        } else {
+          this.backIDUploaded = true;
+          this.backIDImage = event.target.result;
+        }
+
+      }
+      reader.readAsDataURL(event.target.files[0]);
+    }
   }
 }

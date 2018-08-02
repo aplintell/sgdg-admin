@@ -5,10 +5,14 @@ import { Http, RequestOptions, BaseRequestOptions } from '@angular/http';
 @Injectable()
 export class DataService {
 
-  constructor(private url: string, private http: Http, private globalService: GlobalService) { }
+  constructor(protected url: string, protected http: Http, protected globalService: GlobalService) { }
 
   save(resource) {
     return this.http.post(this.globalService.serviceHost + this.url + "save", JSON.stringify(resource), this.globalService.jsonContentTypeOption);
+  }
+
+  saveWithForm(formData) {
+    return this.http.post(this.globalService.serviceHost + this.url + "save", formData, this.globalService.multipartFormOption);
   }
 
   delete(id) {

@@ -4,10 +4,19 @@ export class Customer implements Deserializable{
 
     customerId: number;
     firstName: string;
-    lastName: number;
+    lastName: string;
     loginId: string;
     email: string;
     status: string;
+    gender:string;
+    phone: string;
+    dob: string;
+    address: string;
+    avatar: string|any;
+    frontIdCard: string|any;
+    backIdCard: string|any;
+    point: number;
+    customerType: string;
 
     constructor(){
     }

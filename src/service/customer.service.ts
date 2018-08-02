@@ -10,5 +10,8 @@ export class CustomerService extends DataService {
   constructor( globalService: GlobalService, http: Http) {
     super("/customer/", http, globalService);
   }
-
+  
+  toggleStatus(id) {
+    return this.http.post(this.globalService.serviceHost + "/customer/toggleStatus/" + id, null, this.globalService.formTypeOpion);
+  }
 }
